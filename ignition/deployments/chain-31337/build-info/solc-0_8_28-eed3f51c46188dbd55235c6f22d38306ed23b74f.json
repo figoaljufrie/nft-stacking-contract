@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-eed3f51c46188dbd55235c6f22d38306ed23b74f",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/nft-stake.sol": "project/contracts/nft-stake.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/nft-stake.sol": {
+        "content": "// SPDX-License-Identifier:UNLICENSED\npragma solidity ^0.8.28;\n\n//contract Name: /OOP in web-2 (class)\ncontract NFTStaking {\n    //state-variable:\n\n    //address = any eth wallet address. Can be owner, or user.\n    address public owner; // contact-owner.\n    //total staked of an NFT.\n    uint256 public totalStaked; // total nft-staked of all users.\n\n    //map address & uint 256 to get the users wallet's stake.\n    mapping(address => uint256) public userStaked; // track each users staked.\n    mapping(address => uint256) public stakeTimestamps;\n\n    //events (listener / log / web-hook in web-2)\n\n    //user staked log: (IN)\n    event Staked(address indexed user, uint256 amount);\n    //user un-staked log: (OUT)\n    event Unstaked(address indexed user, uint256 amount);\n    //reset time-stamp after reward claim.\n    event RewardClaimed(address indexed user, uint256 reward);\n\n    //the reason why staked and unstaked is seperated, because they have opposite actions. Seperating helps analytics & front-end listeners.\n    constructor() {\n        //msg.sender = wallet deploying the contract.\n        //msg.sender = owner's wallet.\n        owner = msg.sender;\n    }\n\n    //modifiers (equivalent of RBAC in web-2);\n    /**its the same as:\n    export default function onlyOwner() => {\n    if (msg.sender !== owner) {\n    return (\" Not authorized)\n    } next();\n    **/\n    modifier onlyOwner() {\n        require(msg.sender == owner, \"Not Authorized\");\n        _; //underscore equals to next() in web-2.\n    }\n\n    //function A: business logics A.\n    function stake(uint256 amount) public {\n        //rules: amount must be more than 0, need to be positive. Same, if not bigger than 0, throw warning message.\n        require(amount > 0, \"Amount must be positive\");\n        /**\n      msg.sender(owner's wallet) = Alice.\n      userStaked[alice] = 0\n      amount = 5\n      alice's userStaked = 0 + 5 = 5 (new Alice User's Staked?)\n       */\n        userStaked[msg.sender] += amount;\n\n        //total-staked = sum of all userStaked.\n        //Alice have 5 User Staked\n        //Bob has 2 User Staked\n        //then, total Staked = 7.\n        totalStaked += amount;\n        stakeTimestamps[msg.sender] = block.timestamp;\n\n        //broadcast to log? Broadcast user + amount entered?\n        emit Staked(msg.sender, amount);\n\n        /**\n      note;\n      User Staked = per individual\n      Total Staked = Global, sum of all User Staked that exist.\n\n      So every time there is a transaction, amount of user new staked will be incremented to the global stake.\n      */\n    }\n\n    function unstake(uint256 amount) public {\n        //user-stake nft must be larger than emount, if not, throw message.\n        require(userStaked[msg.sender] >= amount, \"Not enough staked\");\n\n        //If userStaked >= amount, userStaked - amount;\n        userStaked[msg.sender] -= amount;\n\n        //(global staked) - (userStake current transactions amount)\n        totalStaked -= amount;\n\n        //broadcast to log transaction unstaked?\n        emit Unstaked(msg.sender, amount);\n    }\n\n    //check reward (placeholder);\n\n    //address = user who made transaction?\n    function calculateRewards(address user) public view returns (uint256) {\n        //return userStaked after transaction, notify log user-staked amount after staking or unstaking.\n        uint256 staked = userStaked[user];\n        uint256 duration = block.timestamp - stakeTimestamps[user];\n\n        uint256 dailyRewardRate = 1e16;\n        uint256 reward = (staked * dailyRewardRate * duration) / 1 days;\n        return reward;\n    }\n\n    function claimRewards() public {\n      uint256 rewards = calculateRewards(msg.sender);\n      require(rewards > 0, \"No rewards yet\");\n\n      //reset timestamp after claiming.\n      stakeTimestamps[msg.sender] = block.timestamp;\n\n      //payout( in real contract, this is the token transfer phase);\n      emit RewardClaimed(msg.sender, rewards);\n    }\n  \n}\n"
+      }
+    }
+  }
+}
