@@ -1,9 +1,11 @@
+import "ts-node/register"
 import type { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-ignition-ethers";
-import "@nomicfoundation/hardhat-chai-matchers";
+import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
 import { configVariable } from "hardhat/config";
 
+
 const config: HardhatUserConfig = {
+  plugins: [hardhatToolboxViemPlugin],
   solidity: {
     profiles: {
       default: {
@@ -19,6 +21,9 @@ const config: HardhatUserConfig = {
         },
       },
     },
+  },
+   paths: {
+    tests: "./tests"  // Add this line
   },
   networks: {
     hardhatMainnet: {

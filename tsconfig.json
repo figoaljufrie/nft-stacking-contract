@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "lib": ["es2023"],
-    "strict": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "resolveJsonModule": true,
-    "outDir": "dist",
-    "types": ["node", "chai", "mocha", "@nomicfoundation/hardhat-ethers"]
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["./scripts", "./test", "./typechain-types", "./hardhat.config.ts"],
-  "exclude": ["node_modules"]
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": true
+  },
+  "include": ["./tests/**/*", "./scripts/**/*", "./ignition/**/*"],
+  "files": ["./hardhat.config.ts"]
 }
