@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.28;
 
-import {NFTStaking} from "../contracts/nft-stake.sol";
+import {NFTStaking} from "../contracts/NFTStaking.sol";
 import {Test} from "forge-std/Test.sol";
 
 contract NFTStakingTest is Test {
@@ -129,15 +129,27 @@ Stake: The act of locking or depositing an asset into a smart contract for a spe
         //amount of the stake's that bob's put in the contract.
         staking.stake(7);
 
+        //simulate 1-day time pass.
+        vm.warp(block.timestamp + 1 days);
+
         //calculate how much bob's has already staked. If he stakes again, the calculateRewards will increment, adjusting based on the total stakes of bob.
         uint256 rewardsA = staking.calculateRewards(bob);
-        require(rewardsA == 7, "Bob's reward should equal his stake");
+        uint256 expectedRewardA = (7 * 1e16 * 1 days) / 1 days; // 7 stakes * 1% of gwei * 1 days / 1 days.
+        assertEq(
+            rewardsA,
+            expectedRewardA,
+            "Bob's reward should equal his stake"
+        );
 
         vm.prank(alice);
         staking.stake(5);
 
+        //simulate 2-days passing time;
+        vm.warp(block.timestamp + 2 days);
+
         uint256 rewardsB = staking.calculateRewards(alice);
-        require(rewardsB == 5, "Alice's reward should equal her stake");
+        uint256 expectedRewardB = (5 * 1e16 * 2 days) / 1 days;
+       assertEq(rewardsB, expectedRewardB, "Alice's Reward should equal expected");
 
         require(
             staking.totalStaked() == 12,

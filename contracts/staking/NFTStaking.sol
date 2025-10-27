@@ -101,14 +101,19 @@ contract NFTStaking {
     }
 
     function claimRewards() public {
-      uint256 rewards = calculateRewards(msg.sender);
-      require(rewards > 0, "No rewards yet");
+        uint256 rewards = calculateRewards(msg.sender);
+        require(rewards > 0, "No rewards yet");
 
-      //reset timestamp after claiming.
-      stakeTimestamps[msg.sender] = block.timestamp;
+        //reset timestamp after claiming.
+        stakeTimestamps[msg.sender] = block.timestamp;
 
-      //payout( in real contract, this is the token transfer phase);
-      emit RewardClaimed(msg.sender, rewards);
+        //payout( in real contract, this is the token transfer phase);
+        emit RewardClaimed(msg.sender, rewards);
     }
-  
+
+    function resetUserStake(address user) external onlyOwner {
+        totalStaked -= userStaked[user];
+        userStaked[user] = 0;
+        stakeTimestamps[user] = 0;
+    }
 }

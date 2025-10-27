@@ -1,8 +1,7 @@
-import "ts-node/register"
+// import "ts-node/register";
 import type { HardhatUserConfig } from "hardhat/config";
 import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
 import { configVariable } from "hardhat/config";
-
 
 const config: HardhatUserConfig = {
   plugins: [hardhatToolboxViemPlugin],
@@ -22,10 +21,14 @@ const config: HardhatUserConfig = {
       },
     },
   },
-   paths: {
-    tests: "./tests"  // Add this line
+  paths: {
+    tests: "./test", // Add this line
   },
   networks: {
+    hardhat: {
+      chainType: "l1",
+      type: "edr-simulated",
+    },
     hardhatMainnet: {
       type: "edr-simulated",
       chainType: "l1",
