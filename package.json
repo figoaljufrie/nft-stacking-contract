@@ -4,7 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "NODE_OPTIONS='--no-experimental-test-runner' hardhat test",
+    "test": "hardhat test",
     "test:forge": "forge test",
     "test:all": "forge test && hardhat test",
     "compile": "hardhat compile",
@@ -17,14 +17,11 @@
   "description": "",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox-viem": "^5.0.0",
-    "@types/chai": "^5.2.3",
-    "@types/mocha": "^10.0.10",
+    "@openzeppelin/contracts": "^5.4.0",
     "@types/node": "^22.18.12",
     "forge-std": "github:foundry-rs/forge-std#v1.9.4",
     "hardhat": "^3.0.8",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.0"
-  },
-  "dependencies": {
-    "ts-node": "^10.9.2"
   }
 }

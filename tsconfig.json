@@ -11,9 +11,8 @@
   },
   "ts-node": {
     "esm": true,
-    "experimentalSpecifierResolution": "node",
     "transpileOnly": true
   },
-  "include": ["./tests/**/*", "./scripts/**/*", "./ignition/**/*"],
+  "include": ["./test/**/*", "./scripts/**/*", "./ignition/**/*"],
   "files": ["./hardhat.config.ts"]
 }
