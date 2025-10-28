@@ -30,6 +30,7 @@ contract MyNFT is
     );
 
     uint256 public mintPrice;
+    uint256 public constant MAX_SUPPLY = 10000; // Maximum NFT supply
 
     //to sets initial owner and starts tokenId at 1.
     //the constructor allows us to restrict functions, in this case: minting specific to owner only.
@@ -57,6 +58,7 @@ contract MyNFT is
         address to,
         string memory tokenURI_
     ) external onlyOwner returns (uint256) {
+        require(_nextTokenId <= MAX_SUPPLY, "Max supply reached");
         uint256 tid = _nextTokenId; // save current tokenId.
         _safeMint(to, tid); // mint safely (checks smart contracts receivers);
         _tokenURIs[tid] = tokenURI_; //store meta-data URI.
@@ -71,6 +73,7 @@ contract MyNFT is
     ) external payable nonReentrant returns (uint256) {
         //validation: if users mint, they must pay at least mintPrice. If not:
         require(msg.value >= mintPrice, "Insufficient funds to mint");
+        require(_nextTokenId <= MAX_SUPPLY, "Max supply reached");
         //proceed minting if validation passed.
         uint256 tid = _nextTokenId;
         //msg.sender = user's wallet.
@@ -85,13 +88,14 @@ contract MyNFT is
     }
 
     // Withdraw function for contract owner to collect funds
-    function withdraw() external onlyOwner {
+    function withdraw() external onlyOwner nonReentrant {
         //get contract balance:
         uint256 balance = address(this).balance;
         //validation: check if there are funds to withdraw.
         require(balance > 0, "No funds to withdraw");
-        //transfer balance to owner's wallet.
-        payable(owner()).transfer(balance);
+        //transfer balance to owner's wallet using call pattern (safer)
+        (bool success, ) = payable(owner()).call{value: balance}("");
+        require(success, "Transfer failed");
     }
 
     //returns the token URI for a given tokenId;
@@ -99,10 +103,7 @@ contract MyNFT is
         uint256 tokenId
     ) public view override(ERC721) returns (string memory) {
         //validation: Token must exist, if not:
-        require(
-            _ownerOf(tokenId) != address(0),
-            "ERC721: token does not exist."
-        );
+        require(ownerOf(tokenId) != address(0), "ERC721: token does not exist.");
         string memory _tokenURI = _tokenURIs[tokenId];
         if (bytes(_tokenURI).length > 0) {
             return

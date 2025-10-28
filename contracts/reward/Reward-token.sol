@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -13,6 +13,11 @@ contract RewardToken is ERC20, ERC20Burnable, Ownable, Pausable {
     // Address allowed to mint (staking contract)
     address public stakingManager;
 
+    event StakingManagerUpdated(
+        address indexed oldManager,
+        address indexed newManager
+    );
+
     constructor(
         string memory name,
         string memory symbol,
@@ -24,7 +29,10 @@ contract RewardToken is ERC20, ERC20Burnable, Ownable, Pausable {
 
     // Owner sets staking manager
     function setStakingManager(address _manager) external onlyOwner {
+        require(_manager != address(0), "Invalid manager address");
+        address oldManager = stakingManager;
         stakingManager = _manager;
+        emit StakingManagerUpdated(oldManager, _manager);
     }
 
     // Mint function callable only by stakingManager
@@ -44,12 +52,12 @@ contract RewardToken is ERC20, ERC20Burnable, Ownable, Pausable {
         _unpause();
     }
 
-    // Override _update to respect pause
+    // Override _update to respect pause - FIXED: was whenPaused, now whenNotPaused
     function _update(
         address from,
         address to,
         uint256 amount
-    ) internal override whenPaused {
+    ) internal override whenNotPaused {
         super._update(from, to, amount);
     }
 }
