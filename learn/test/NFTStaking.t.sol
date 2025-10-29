@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.28;
 
-import {NFTStaking} from "../contracts/NFTStaking.sol";
+import {NFTStaking} from "../NFTStaking.sol";
 import {Test} from "forge-std/Test.sol";
 
 contract NFTStakingTest is Test {

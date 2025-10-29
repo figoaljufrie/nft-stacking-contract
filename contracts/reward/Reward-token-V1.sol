@@ -1,12 +1,21 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/PausableUpgradeable.sol";
+import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 
-contract RewardToken is ERC20, ERC20Burnable, Ownable, Pausable {
+// import "@openzeppelin/contracts/proxy/utils/Initializible.sol";
+
+contract RewardTokenUpgradeable is
+    UUPSUpgradeable,
+    ERC20Upgradeable,
+    ERC20BurnableUpgradeable,
+    OwnableUpgradeable,
+    PausableUpgradeable
+{
     // Max total supply (e.g., 10 million tokens)
     uint256 public constant MAX_SUPPLY = 10_000_000 * 10 ** 18;
 
@@ -18,11 +27,19 @@ contract RewardToken is ERC20, ERC20Burnable, Ownable, Pausable {
         address indexed newManager
     );
 
-    constructor(
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(
         string memory name,
         string memory symbol,
         address initialOwner
-    ) ERC20(name, symbol) Ownable(initialOwner) {
+    ) public initializer {
+        __ERC20_init(name, symbol);
+        __ERC20Burnable_init();
+        __Ownable_init(initialOwner);
+        __Pausable_init();
         // Initial mint to owner for liquidity or initial distribution
         _mint(initialOwner, 1_000_000 * 10 ** decimals());
     }
@@ -59,5 +76,13 @@ contract RewardToken is ERC20, ERC20Burnable, Ownable, Pausable {
         uint256 amount
     ) internal override whenNotPaused {
         super._update(from, to, amount);
+    }
+
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
+
+    function version() external pure returns (string memory) {
+        return "1.0.0";
     }
 }
