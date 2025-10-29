@@ -3,14 +3,20 @@ pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardTransientUpgradeable.sol";
+import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 
 interface IRewardToken is IERC20 {
     function mint(address to, uint256 amount) external;
 }
 
-contract StakingManager is Ownable, ReentrancyGuardTransient {
+contract StakingManagerUpgradeable is
+    Initializable,
+    OwnableUpgradeable,
+    ReentrancyGuardTransientUpgradeable,
+    UUPSUpgradeable
+{
     IERC721 public nftCollection; //NFT Collection that users staked.
     IERC20 public rewardToken; // ERC20 token used for rewards.
     uint256 public rewardRate; //Reward per NFT per second.
@@ -34,19 +40,27 @@ contract StakingManager is Ownable, ReentrancyGuardTransient {
     event Paused();
     event Unpaused();
 
+    constructor() {
+        _disableInitializers();
+    }
+
     modifier whenNotPaused() {
         require(!paused, "Contract is paused");
         _;
     }
 
-    constructor(
+    function initialize(
         address _nftCollection,
         address _rewardToken,
         uint256 _rewardRate,
         address initialOwner
-    ) Ownable(initialOwner) ReentrancyGuardTransient() {
+    ) public initializer {
         require(_nftCollection != address(0), "Invalid NFT address");
         require(_rewardToken != address(0), "Invalid token address");
+
+        __Ownable_init(initialOwner);
+        __ReentrancyGuardTransient_init();
+        // __UUPSUpgradeable_init();
         nftCollection = IERC721(_nftCollection);
         rewardToken = IERC20(_rewardToken);
         rewardRate = _rewardRate;
@@ -284,5 +298,13 @@ contract StakingManager is Ownable, ReentrancyGuardTransient {
         uint256 timeStaked = block.timestamp - s.lastClaim;
         uint256 pendingReward = timeStaked * s.tokenIds.length * rewardRate;
         return (s.tokenIds, s.lastClaim, s.accumulatedReward, pendingReward);
+    }
+
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
+
+    function version() external pure returns (string memory) {
+        return "1.0.0";
     }
 }

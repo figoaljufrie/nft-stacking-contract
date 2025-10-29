@@ -24,6 +24,7 @@ This project includes:
 - Modular contracts structure for NFT collection, staking logic, and reward tokens
 
 **NOTES**
+
 - This is my first attempt on entering the web-3 world.
 - I have not had any interactions / solo-educations regarding web-3 before this.
 - I chose this project to get to know the fundamentals / work-flow / general structures of web-3 world (DeFi, Front-end Integration, dApp implementation, Tokenomics)
@@ -31,6 +32,8 @@ This project includes:
 - I will attempt on also creating a (very optional / pessimistic, actually.) back-end structure for the off-chain database.
 - If there are any notes, advices, or any lecturing sessions that can help me get through this project, kindly hit-me-up or give me a comments.
 - I use AI, of course (but trying to minimize and understand it on my own, hence there are a bunch of cluttering commments all over the files).
+- This NFT staking and treasury vault system simulates how NFT-based reward mechanisms work in DeFi.
+- For demonstration, it’s designed to be easily extended with token emission or revenue-sharing systems, but currently focuses on core smart contract architecture, security, and upgradability.
 
 **P.S**
 Early Issues (Will be updated gradually until the end of the project):
@@ -43,7 +46,7 @@ Especially for testing, i used Mocha / Chai before decided to migrate to node: t
 **- Scripts:**
 From what i know, before, we use scripts to deploy our already tested contracts. But, now we deploy in the ignition folders (as far as i know) since it cannot read my type-script file in the scripts folder.
 
-*- Openzeppelin updated version:*
-Since the update of openzeppelin 5.0, unlike before where it has many functions we can use, such as: _BeforeTokenTransfer, _AfterTokenTransfer, etc. Now openzep automatically do that logics internally. So we don't have to, unless we want to have other custom updating logics. We can use _update to override the existing functions.
+_- Openzeppelin updated version:_
+Since the update of openzeppelin 5.0, unlike before where it has many functions we can use, such as: \_BeforeTokenTransfer, \_AfterTokenTransfer, etc. Now openzep automatically do that logics internally. So we don't have to, unless we want to have other custom updating logics. We can use \_update to override the existing functions.
 
 THIS IS ONLY WRITTEN TO DOCUMENT MY PROJECT JOURNEY, IF THERE'S ANY MISINTERPRETED NOTES PLEAE REMIND ME KINDLY. THANKS!

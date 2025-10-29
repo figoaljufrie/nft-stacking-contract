@@ -1,11 +1,16 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.28;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardTransientUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 
-contract TreasuryVault is Ownable, ReentrancyGuardTransient {
+contract TreasuryVault is
+    OwnableUpgradeable,
+    ReentrancyGuardTransientUpgradeable,
+    UUPSUpgradeable
+{
     IERC20 public rewardToken;
     bool public paused;
 
@@ -19,10 +24,18 @@ contract TreasuryVault is Ownable, ReentrancyGuardTransient {
         require(!paused, "Vault is paused");
         _;
     }
-    constructor(
+
+    constructor() {
+        _disableInitializers();
+    }
+
+    function initialize(
         address _rewardToken,
         address initialOwner
-    ) Ownable(initialOwner) ReentrancyGuardTransient() {
+    ) public initializer {
+        __Ownable_init(initialOwner);
+        __ReentrancyGuardTransient_init();
+
         require(_rewardToken != address(0), "Invalid token address");
         rewardToken = IERC20(_rewardToken);
     }
@@ -63,6 +76,7 @@ contract TreasuryVault is Ownable, ReentrancyGuardTransient {
         require(rewardToken.transfer(to, amount), "Transfer failed");
         emit RewardSent(to, amount);
     }
+
     function pause() external onlyOwner {
         paused = true;
         emit Paused();
@@ -75,5 +89,13 @@ contract TreasuryVault is Ownable, ReentrancyGuardTransient {
 
     function getBalance() external view returns (uint256) {
         return rewardToken.balanceOf(address(this));
+    }
+
+    function _authorizeUpgrade(
+        address newImplementation
+    ) internal override onlyOwner {}
+
+    function version() external pure returns (string memory) {
+        return "1.0.0";
     }
 }
