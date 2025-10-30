@@ -5,11 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "hardhat test",
-    "test:forge": "forge test",
-    "test:all": "forge test && hardhat test",
     "compile": "hardhat compile",
-    "compile:forge": "forge build",
-    "clean": "hardhat clean && forge clean"
+    "clean": "hardhat clean"
   },
   "keywords": [],
   "author": "",
