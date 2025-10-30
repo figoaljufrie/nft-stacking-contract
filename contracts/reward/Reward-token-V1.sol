@@ -28,7 +28,7 @@ contract RewardTokenUpgradeable is
     );
 
     constructor() {
-        _disableInitializers();
+        // _disableInitializers();
     }
 
     function initialize(
