@@ -26,7 +26,7 @@ contract TreasuryVault is
     }
 
     constructor() {
-        // _disableInitializers();
+        _disableInitializers();
     }
 
     function initialize(

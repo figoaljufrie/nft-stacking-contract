@@ -41,7 +41,7 @@ contract StakingManagerUpgradeable is
     event Unpaused();
 
     constructor() {
-        // _disableInitializers();
+        _disableInitializers();
     }
 
     modifier whenNotPaused() {
