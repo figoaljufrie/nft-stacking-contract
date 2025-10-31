@@ -1,4 +1,6 @@
 // import "ts-node/register";
+import * as dotenv from "dotenv";
+dotenv.config();
 import type { HardhatUserConfig } from "hardhat/config";
 import hardhatToolboxViemPlugin from "@nomicfoundation/hardhat-toolbox-viem";
 import { configVariable } from "hardhat/config";
@@ -20,6 +22,7 @@ const config: HardhatUserConfig = {
         },
       },
     },
+    npmFilesToBuild: ["@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol"],
   },
   paths: {
     tests: "./test", // Add this line
@@ -42,6 +45,11 @@ const config: HardhatUserConfig = {
       chainType: "l1",
       url: configVariable("SEPOLIA_RPC_URL"),
       accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+    },
+  },
+  verify: {
+    etherscan: {
+      apiKey: configVariable("ETHERSCAN_API_KEY"),
     },
   },
 };

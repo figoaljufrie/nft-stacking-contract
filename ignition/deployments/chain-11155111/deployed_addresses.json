@@ -1,0 +1,12 @@
+{
+  "NFTModule#MyNFT": "0x6B9AE15613e030B7A908a9A0274d37F6B5ea098d",
+  "RewardTokenModule#RewardTokenUpgradeable": "0x50750cD714adf996129ECf572c30C89c9eD93686",
+  "StakingManagerModule#StakingManagerUpgradeable": "0x3eBfEA1b61F405a115FE07E858bc74d702896CDf",
+  "TreasuryVaultModule#TreasuryVault": "0x4bBc7aeD0ee7434e1535da28c109942ecc536C7E",
+  "RewardTokenModule#ERC1967Proxy": "0x3a00B038767654cc0918015FCF865173BE541649",
+  "RewardTokenModule#RewardToken_Proxy_Interface": "0x3a00B038767654cc0918015FCF865173BE541649",
+  "StakingManagerModule#ERC1967Proxy": "0xBb31A6D6B88d56B1c4322dd98976aF7EB8A1d0E6",
+  "TreasuryVaultModule#ERC1967Proxy": "0x2D2aC101dB946E32c11de18C066fCdF16Bed4bfc",
+  "StakingManagerModule#StakingManager_Proxy_Interface": "0xBb31A6D6B88d56B1c4322dd98976aF7EB8A1d0E6",
+  "TreasuryVaultModule#TreasuryVault_Proxy_Interface": "0x2D2aC101dB946E32c11de18C066fCdF16Bed4bfc"
+}
